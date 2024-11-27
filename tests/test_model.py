@@ -3,6 +3,7 @@ import pytest
 import glob
 import os
 import sys
+from torchvision import datasets, transforms
 
 from mnist_classifier import MNISTModel
 from mnist_classifier.train import train
