@@ -23,7 +23,7 @@ wheels/
 
 # Project specific
 data/
-*.pth
+models/
 .pytest_cache/
 .coverage
 htmlcov/

@@ -1,4 +1,4 @@
-# MNIST Classification with CNN
+source # MNIST Classification with CNN
 
 This project implements a Convolutional Neural Network (CNN) for MNIST digit classification using PyTorch.
 

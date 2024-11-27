@@ -5,6 +5,7 @@ from torchvision import datasets, transforms
 from model import MNISTModel
 from datetime import datetime
 from tqdm import tqdm
+import os
 
 def train(num_epochs=1):
     # Set device
@@ -69,7 +70,8 @@ def train(num_epochs=1):
             best_acc = running_acc
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
             acc_str = f"{running_acc:.2f}".replace(".", "p")
-            torch.save(model.state_dict(), f'mnist_model_{timestamp}_acc{acc_str}.pth')
+            os.makedirs('models', exist_ok=True)  # Create models directory if it doesn't exist
+            torch.save(model.state_dict(), f'models/mnist_model_{timestamp}_acc{acc_str}.pth')
 
 if __name__ == '__main__':
     train(num_epochs=1) 
