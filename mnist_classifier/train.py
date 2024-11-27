@@ -13,22 +13,23 @@ def train(num_epochs=1):
     
     # Load MNIST dataset with augmentation
     transform = transforms.Compose([
-        transforms.RandomRotation(10),
-        transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)),
+        transforms.RandomRotation(15),
+        transforms.RandomAffine(degrees=0, translate=(0.1, 0.1), scale=(0.9, 1.1)),
         transforms.ToTensor(),
         transforms.Normalize((0.1307,), (0.3081,))
     ])
     
     train_dataset = datasets.MNIST('./data', train=True, download=True, transform=transform)
-    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=256, shuffle=True)
+    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=128, shuffle=True)
     
     # Initialize model
     model = MNISTModel().to(device)
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
+    optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-5)
     scheduler = optim.lr_scheduler.OneCycleLR(optimizer, max_lr=0.01, 
                                             steps_per_epoch=len(train_loader), 
-                                            epochs=num_epochs)
+                                            epochs=num_epochs,
+                                            pct_start=0.2)
     
     # Training loop
     best_acc = 0.0
@@ -48,6 +49,7 @@ def train(num_epochs=1):
             
             # Backward pass
             loss.backward()
+            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
             optimizer.step()
             scheduler.step()
             
@@ -70,7 +72,7 @@ def train(num_epochs=1):
             best_acc = running_acc
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
             acc_str = f"{running_acc:.2f}".replace(".", "p")
-            os.makedirs('models', exist_ok=True)  # Create models directory if it doesn't exist
+            os.makedirs('models', exist_ok=True)
             torch.save(model.state_dict(), f'models/mnist_model_{timestamp}_acc{acc_str}.pth')
 
 if __name__ == '__main__':
