@@ -58,4 +58,5 @@ def test_model_accuracy():
             total += target.size(0)
     
     accuracy = correct / total
-    assert accuracy > 0.95, f"Model accuracy {accuracy:.2f} is below 0.95"
+    assert accuracy >= 0.95, f"Model accuracy {accuracy:.4f} is below required 0.95 threshold"
+    print(f"Model achieved accuracy: {accuracy:.4f}")

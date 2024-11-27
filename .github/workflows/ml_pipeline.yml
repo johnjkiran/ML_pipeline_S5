@@ -1,6 +1,6 @@
 name: ML Pipeline
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build-and-test:
@@ -14,22 +14,32 @@ jobs:
       with:
         python-version: '3.8'
     
+    - name: Cache pip packages
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install -e .
     
-    - name: Train model
+    - name: Check model parameters
+      run: |
+        python -c "from mnist_classifier.model import MNISTModel; model = MNISTModel(); params = sum(p.numel() for p in model.parameters()); assert params < 25000, f'Model has {params} parameters'"
+    
+    - name: Train and test model
       run: |
         python -c "from mnist_classifier.train import train; train()"
-    
-    - name: Run tests
-      run: |
-        pytest tests/
+        pytest tests/ -v
     
     - name: Upload trained model
       uses: actions/upload-artifact@v4
       with:
         name: trained-model
-        path: models/ 
+        path: models/
+        if-no-files-found: error

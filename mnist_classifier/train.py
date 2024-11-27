@@ -13,8 +13,8 @@ def train(num_epochs=1):
     
     # Load MNIST dataset with augmentation
     transform = transforms.Compose([
-        transforms.RandomRotation(15),
-        transforms.RandomAffine(degrees=0, translate=(0.1, 0.1), scale=(0.9, 1.1)),
+        transforms.RandomRotation(10),
+        transforms.RandomAffine(degrees=0, translate=(0.1, 0.1), scale=(0.95, 1.05)),
         transforms.ToTensor(),
         transforms.Normalize((0.1307,), (0.3081,))
     ])
@@ -25,11 +25,11 @@ def train(num_epochs=1):
     # Initialize model
     model = MNISTModel().to(device)
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-5)
-    scheduler = optim.lr_scheduler.OneCycleLR(optimizer, max_lr=0.01, 
+    optimizer = optim.Adam(model.parameters(), lr=0.002, weight_decay=1e-4)
+    scheduler = optim.lr_scheduler.OneCycleLR(optimizer, max_lr=0.015, 
                                             steps_per_epoch=len(train_loader), 
                                             epochs=num_epochs,
-                                            pct_start=0.2)
+                                            pct_start=0.1)
     
     # Training loop
     best_acc = 0.0
