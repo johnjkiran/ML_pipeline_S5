@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torchvision import datasets, transforms
-from model import MNISTModel
+from mnist_classifier.model import MNISTModel
 from datetime import datetime
 from tqdm import tqdm
 import os

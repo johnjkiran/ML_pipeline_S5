@@ -22,7 +22,7 @@ jobs:
     
     - name: Train model
       run: |
-        python train.py
+        python -c "from mnist_classifier.train import train; train()"
     
     - name: Run tests
       run: |

@@ -2,8 +2,10 @@ import torch
 import pytest
 import glob
 import os
-from model import MNISTModel
-from torchvision import datasets, transforms
+import sys
+
+from mnist_classifier import MNISTModel
+from mnist_classifier.train import train
 
 @pytest.fixture
 def model():
@@ -23,11 +25,10 @@ def test_model_accuracy():
     model = MNISTModel()
     
     # Try to load the latest trained model if available
-    model_files = glob.glob('mnist_model_*.pth')
+    model_files = glob.glob('models/mnist_model_*.pth')
     if not model_files:  # If no trained model exists, train one
-        from train import train
         train(num_epochs=3)  # Train for 3 epochs
-        model_files = glob.glob('mnist_model_*.pth')
+        model_files = glob.glob('models/mnist_model_*.pth')
     
     latest_model = max(model_files, key=os.path.getctime)
     model.load_state_dict(torch.load(latest_model))
@@ -56,4 +57,4 @@ def test_model_accuracy():
             total += target.size(0)
     
     accuracy = correct / total
-    assert accuracy > 0.95, f"Model accuracy {accuracy:.2f} is below 0.95"  # Reduced threshold to 95%
+    assert accuracy > 0.95, f"Model accuracy {accuracy:.2f} is below 0.95"
