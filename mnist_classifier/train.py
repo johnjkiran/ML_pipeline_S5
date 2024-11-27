@@ -25,8 +25,8 @@ def train(num_epochs=1):
     # Initialize model
     model = MNISTModel().to(device)
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.002, weight_decay=1e-4)
-    scheduler = optim.lr_scheduler.OneCycleLR(optimizer, max_lr=0.015, 
+    optimizer = optim.Adam(model.parameters(), lr=0.003, weight_decay=1e-4)
+    scheduler = optim.lr_scheduler.OneCycleLR(optimizer, max_lr=0.02, 
                                             steps_per_epoch=len(train_loader), 
                                             epochs=num_epochs,
                                             pct_start=0.1)
